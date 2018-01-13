@@ -8,8 +8,7 @@
 #define MDIA 2 // media keys
 
 enum custom_keycodes {
-  PLACEHOLDER = SAFE_RANGE, // can always be here
-  SHRUG = SAFE_RANGE,
+  SHRUG = SAFE_RANGE, // can always be here
   FLIP,
   THINK,
   EPRM,
@@ -17,7 +16,29 @@ enum custom_keycodes {
   RGB_SLD
 };
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+/* Keymap 0: Basic layer
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * |   Esc  |   1  |   2  |   3  |   4  |   5  |  [   |           |  ]   |   6  |   7  |   8  |   9  |   0  |  -_    |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * | Tab    |   Q  |   W  |   E  |   R  |   T  |  `   |           |  =   |   Y  |   U  |   I  |   O  |   P  |   \    |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * | Ctrl   |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |  ;   |   '"   |
+ * |--------+------+------+------+------+------|bright|           |bright|------+------+------+------+------+--------|
+ * | LShift |   Z  |   X  |   C  |   V  |   B  |  up  |           | down |   N  |   M  |   ,  |   .  |  /   | RShift |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   |:flip:|:thnk:|CapsLo| Opti | Cmd  |                                       | left |  up  | down | right| :shrug:|
+ *   `----------------------------------'                                       `-----------------------------------'
+ *                                        ,-------------.       ,-------------.
+ *                                        | ~L1  | mute |       | Pause|   ~L2  |
+ *                                 ,------|------|------|       |------+--------+------.
+ *                                 |      |      | Volup|       |  Nxt |        |      |
+ *                                 |Backsp|delete|------|       |------|  Enter |Space |
+ *                                 | ace  |      |Voldwn|       | Prev |        |      |
+ *                                 `--------------------'       `----------------------'
+ */
+// If it accepts an argument (i.e, is a function), it doesn't need KC_.
+// Otherwise, it needs KC_*
 [BASE] = LAYOUT_ergodox(  // layer 0 : default
         // left hand
         KC_ESC,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_LBRC,
@@ -123,6 +144,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 };
 
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+
+  [0] = {
+      {SHRUG, FLIP, THINK}
+    }
+};
+
 const uint16_t PROGMEM fn_actions[] = {
     [1] = ACTION_LAYER_TAP_TOGGLE(SYMB)                // FN1 - Momentary Layer 1 (Symbols)
 };
@@ -152,13 +180,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING("¯\\\\_(ツ)_/¯");
                 return false; break;
             case FLIP:
-                SEND_STRING("(╯°□°）╯︵ ┻━┻");
+                SEND_STRING(SS_LCTRL("(╯°□°）╯︵ ┻━┻"));
                 return false; break;
             case THINK:
-                SEND_STRING("U+1F914");
+                SEND_STRING(SS_LCTRL("U+1F914"));
                 return false; break;
         }
     }
+    return true;
+  }
   switch (keycode) {
     // dynamically generate these.
     case EPRM:
